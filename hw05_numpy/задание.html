@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chisel 3 dz</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="домашнее-задание-15-задач-на-отработку-темы-«numpy-массивы-формы-типы-данных-и-базовые-операции»">Домашнее задание: 15 задач на отработку темы «NumPy: массивы, формы, типы данных и базовые операции»</h1>
+<p><strong>Формат сдачи:</strong> файл <code>.py</code> (или <code>.ipynb</code>) с решениями. Каждая задача — отдельная функция или отдельная ячейка с <code>print</code>. Для задач, где нужно «объяснить», — вывод в 2–3 предложениях текстом в комментарии или <code>print</code>. Также нужно прикрепить скриншот выполнения. Все через репозиторий.</p>
+<p><strong>Требование:</strong> все задачи запускаются. Если задача требует данных — они генерируются в коде (никаких внешних файлов).</p>
+<hr>
+<h2 id="блок-1.-ndarray-shape-dtype-задачи-1–4">Блок 1. <code>ndarray</code>, <code>shape</code>, <code>dtype</code> (задачи 1–4)</h2>
+<p><strong>Задача 1. Инвентаризация массива.</strong><br>
+Создайте массив <code>np.arange(60).reshape(3, 4, 5)</code>. Выведите <code>shape</code>, <code>ndim</code>, <code>size</code>, <code>dtype</code>, <code>strides</code>, <code>C_CONTIGUOUS</code>. Объясните в 2–3 предложениях, что означает каждое число в <code>strides</code> и почему <code>size = 60</code>.</p>
+<p><strong>Задача 2. <code>int</code> vs <code>float</code> — тихая ловушка.</strong><br>
+Создайте <code>a = np.array([1, 2, 3, 4])</code>. Выполните <code>a / 2</code>, <code>a // 2</code>, <code>a / 2.0</code>, <code>a.dtype</code>, <code>(a / 2).dtype</code>, <code>(a // 2).dtype</code>. Затем создайте <code>b = np.array([1, 2, 3], dtype=np.int8)</code>, прибавьте 127 и выведите результат и <code>dtype</code>. Объясните: почему <code>a / 2</code> не меняет <code>a</code>, а <code>b + 127</code> даёт странный результат, и почему NumPy не падает с ошибкой.</p>
+<p><strong>Задача 3. <code>float32</code> vs <code>float64</code> — реальная точность.</strong><br>
+Сравните <code>np.float32(0.1) - np.float32(0.1)</code> не поможет; сделайте иначе: <code>float(np.float32(0.1)) - 0.1</code> и <code>float(np.float64(0.1)) - 0.1</code>. Выведите оба числа в <code>repr</code> и в <code>:.20e</code>. Посчитайте, во сколько раз ошибка <code>float32</code> больше ошибки <code>float64</code>. Сделайте вывод: в каких задачах численных методов <code>float32</code> допустим, а в каких — нет.</p>
+<p><strong>Задача 4. Явный <code>dtype</code> при создании.</strong><br>
+Создайте четыре массива одинакового размера <code>(2, 3)</code>:</p>
+<ul>
+<li><code>np.zeros</code> с <code>dtype=np.float64</code>;</li>
+<li><code>np.zeros</code> с <code>dtype=np.float32</code>;</li>
+<li><code>np.ones</code> с <code>dtype=np.int16</code>;</li>
+<li><code>np.full</code> со значением <code>7</code> и <code>dtype=np.uint8</code>.</li>
+</ul>
+<p>Выведите <code>dtype</code> и <code>nbytes</code> каждого. Посчитайте, сколько байт экономит <code>float32</code> по сравнению с <code>float64</code> на массиве <code>(1000, 1000)</code>. Сделайте вывод о компромиссе «память vs точность».</p>
+<hr>
+<h2 id="блок-2.-reshape-ravel-flatten-.t-newaxis-задачи-5–8">Блок 2. <code>reshape</code>, <code>ravel</code>, <code>flatten</code>, <code>.T</code>, <code>newaxis</code> (задачи 5–8)</h2>
+<p><strong>Задача 5. Цепочка <code>reshape</code>.</strong><br>
+Создайте <code>a = np.arange(24)</code>. Преобразуйте последовательно в <code>(4, 6)</code>, <code>(2, 3, 4)</code>, <code>(2, 2, 6)</code>, <code>(24,)</code>. После каждого шага выведите <code>shape</code> и проверьте через <code>np.array_equal(a, текущий.ravel())</code>, что данные не потерялись. Объясните: почему <code>reshape</code> обычно не копирует данные и когда он <strong>вынужден</strong> скопировать.</p>
+<p><strong>Задача 6. <code>flatten</code> vs <code>ravel</code> — копия или view.</strong><br>
+Создайте <code>M = np.arange(12).reshape(3, 4)</code>. Получите <code>f = M.flatten()</code> и <code>r = M.ravel()</code>. Выведите <code>f.base is None</code>, <code>r.base is M</code> (или <code>r.base is not None</code>). Измените <code>f[0] = 999</code> и <code>r[1] = 888</code> — проверьте, изменился ли <code>M</code> в каждом случае. Сделайте вывод: когда использовать <code>ravel</code>, когда <code>flatten</code>.</p>
+<p><strong>Задача 7. <code>newaxis</code>, <code>squeeze</code>, транспонирование.</strong><br>
+Создайте <code>v = np.arange(5)</code>. Получите:</p>
+<ul>
+<li><code>v[:, None]</code> — форма?</li>
+<li><code>v[None, :]</code> — форма?</li>
+<li><code>np.squeeze(v[:, None])</code> — форма?</li>
+<li><code>np.arange(6).reshape(2, 3).T</code> — форма и содержимое.</li>
+</ul>
+<p>Для каждой операции объясните одной строкой, что произошло. Затем вычислите <code>v[:, None] + v[None, :]</code> — какая форма получилась и что это за матрица (подсказка: таблица умножения).</p>
+<p><strong>Задача 8. Транспонирование без копии.</strong><br>
+Создайте <code>A = np.arange(6).reshape(2, 3)</code>. Получите <code>B = A.T</code>. Проверьте <code>B.base is A</code> (или <code>B.base is not None</code>). Измените <code>B[0, 1] = 999</code> — изменился ли <code>A</code>? Сделайте вывод: почему <code>.T</code> — view, а не копия, и как это связано с <code>strides</code>.</p>
+<hr>
+<h2 id="блок-3.-операции-агрегации-axis-задачи-9–11">Блок 3. Операции, агрегации, <code>axis</code> (задачи 9–11)</h2>
+<p><strong>Задача 9. Поэлементно vs матричное.</strong><br>
+Создайте <code>A = np.arange(6).reshape(2, 3)</code> и <code>B = np.arange(6).reshape(3, 2)</code>. Выполните <code>A @ B</code>, <code>A.T @ B.T</code>, <code>A * A</code>. Выведите формы и значения. Объясните: почему <code>A * B</code> даёт ошибку (или работает?) и в чём разница между <code>*</code> и <code>@</code>. Приведите пример, когда <code>*</code> и <code>@</code> дают <strong>одинаковый</strong> результат (подсказка: диагональная матрица).</p>
+<p><strong>Задача 10. <code>axis=0</code> vs <code>axis=1</code>.</strong><br>
+Создайте <code>M = np.arange(12).reshape(3, 4)</code>. Вычислите <code>M.sum(axis=0)</code>, <code>M.sum(axis=1)</code>, <code>M.mean(axis=0)</code>, <code>M.mean(axis=1)</code>, <code>M.argmax(axis=0)</code>, <code>M.argmax(axis=1)</code>. Для каждой операции объясните одной строкой: по какой оси «свернули» и что означает результат. Проверьте на маленьком примере, что <code>M.sum(axis=0)</code> — это сумма по столбцам, а не по строкам.</p>
+<p><strong>Задача 11. <code>keepdims</code> и broadcasting.</strong><br>
+Создайте <code>X = np.random.default_rng(42).normal(size=(5, 3))</code>. Вычислите <code>X.mean(axis=0)</code> (форма <code>(3,)</code>) и <code>X.mean(axis=0, keepdims=True)</code> (форма <code>(1, 3)</code>). Выполните <code>X - X.mean(axis=0)</code> и <code>X - X.mean(axis=0, keepdims=True)</code> — обе формы должны дать <code>(5, 3)</code>. Затем посчитайте <code>X.std(axis=1)</code> без <code>keepdims</code> и с ним, и нормируйте строки: <code>(X - X.mean(axis=1, keepdims=True)) / X.std(axis=1, keepdims=True)</code>. Убедитесь, что средние по строкам ≈ 0, std по строкам ≈ 1. Объясните, зачем нужен <code>keepdims</code>.</p>
+<hr>
+<h2 id="блок-4.-индексация-выборки-broadcasting-задачи-12–15">Блок 4. Индексация, выборки, broadcasting (задачи 12–15)</h2>
+<p><strong>Задача 12. Срез — view, не копия.</strong><br>
+Создайте <code>a = np.arange(10)</code>. Получите <code>b = a[2:5]</code>. Измените <code>b[0] = 999</code> и проверьте <code>a</code>. Затем повторите с <code>c = a[2:5].copy()</code> — изменился ли <code>a</code>? Объясните: почему это важно для численных методов (подсказка: если вы «обрезаете» данные для анализа и случайно меняете оригинал, что произойдёт с экспериментом?). Приведите пример, когда view — преимущество (экономия памяти), а когда — баг.</p>
+<p><strong>Задача 13. Булева маска и fancy indexing.</strong><br>
+Создайте <code>a = np.random.default_rng(0).normal(size=20)</code>. Выполните:</p>
+<ul>
+<li><code>a[a &gt; 0]</code> — сколько элементов?</li>
+<li><code>a[(a &gt; -1) &amp; (a &lt; 1)]</code> — сколько?</li>
+<li><code>a[[0, 5, 10, 15]]</code> — что это за выборка?</li>
+<li><code>a[np.abs(a) &gt; 2]</code> — выбросы.</li>
+</ul>
+<p>Затем занулите все отрицательные через <code>a[a &lt; 0] = 0</code> и выведите результат. Объясните: почему <code>a[a &gt; 0] &amp; (a &lt; 1)</code> даёт ошибку, а <code>(a &gt; 0) &amp; (a &lt; 1)</code> — работает.</p>
+<p><strong>Задача 14. Broadcasting в реальной задаче.</strong><br>
+Создайте <code>X = np.random.default_rng(1).normal(size=(100, 3))</code> (100 наблюдений, 3 признака). Нормируйте каждый столбец: вычтите среднее и разделите на std <strong>через broadcasting</strong> (без цикла). Убедитесь, что <code>X_norm.mean(axis=0)</code> ≈ 0 и <code>X_norm.std(axis=0)</code> ≈ 1. Затем посчитайте матрицу попарных евклидовых расстояний между строками: <code>D[i, j] = ||X_norm[i] - X_norm[j]||</code> — через broadcasting в одну строку, без цикла. Проверьте, что <code>D.shape = (100, 100)</code>, диагональ ≈ 0, матрица симметрична.</p>
+<p><strong>Задача 15. Полный кейс: загрузка → выборка → reshape → агрегация → нормировка.</strong><br>
+Сгенерируйте «измерения»: <code>rng = np.random.default_rng(42)</code>, 30 дней × 4 датчика, нормальное распределение со средним 20 и std 2, плюс один искусственный выброс (<code>raw[7, 2] = 100</code>).</p>
+<p>Выполните по шагам и выведите результат каждого:</p>
+<ol>
+<li><code>shape</code>, <code>dtype</code>, <code>size</code>.</li>
+<li>Найдите выбросы булевой маской: <code>np.abs(raw - raw.mean(axis=0)) &gt; 3 * raw.std(axis=0)</code>. Сколько их?</li>
+<li>Замените выбросы на <code>np.nan</code>, затем на среднее по столбцу через <code>np.nanmean</code> и <code>np.where</code>.</li>
+<li>Преобразуйте <code>(30, 4)</code> в <code>(4, 30)</code> через <code>.T</code>, затем обратно через <code>.T</code> — убедитесь через <code>np.array_equal</code>, что данные не изменились.</li>
+<li>«Сплющите» в <code>(120,)</code> через <code>ravel</code>, затем восстановите <code>(30, 4)</code> через <code>reshape</code> — проверьте равенство.</li>
+<li>Посчитайте средние и std по каждому датчику (<code>axis=0</code>).</li>
+<li>Нормируйте каждый столбец через broadcasting. Убедитесь, что средние ≈ 0, std ≈ 1.</li>
+</ol>
+<p>Оформите как один скрипт с <code>print</code> на каждом шаге. В конце — короткий вывод (3–5 предложений): какие операции потребовали <code>copy()</code>, где сработал broadcasting, где могла возникнуть ошибка формы.</p>
+<hr>
+<h2 id="бонус-по-желанию">Бонус (по желанию)</h2>
+<p><strong>Задача 16. Найди баг в чужом коде.</strong><br>
+Найдите на GitHub или Stack Overflow фрагмент кода на NumPy, где есть одна из типичных ошибок:</p>
+<ul>
+<li><code>*</code> вместо <code>@</code> для матричного умножения;</li>
+<li>изменение среза без <code>.copy()</code> (случайная порча исходных данных);</li>
+<li><code>axis=0</code> там, где нужен <code>axis=1</code>;</li>
+<li>integer-переполнение (<code>int8</code>/<code>int16</code> на больших числах);</li>
+<li><code>reshape</code> без проверки <code>size</code> (получили не то, что ожидали).</li>
+</ul>
+<p>Приведите код (ссылку — обязательно), объясните проблему, предложите исправление и покажите <strong>запускаемый</strong> пример «до/после» на синтетических данных, где видно расхождение.</p>
+<hr>
+<p><strong>Главное, что проверяется:</strong> умение <strong>читать</strong> <code>shape</code>/<code>dtype</code>, <strong>различать</strong> view и copy, <strong>выбирать</strong> правильную ось в агрегациях, <strong>применять</strong> broadcasting вместо циклов, и <strong>не наступать</strong> на типичные ловушки (<code>*</code> vs <code>@</code>, переполнение, случайная порча данных через срез).</p>
+</div>
+</body>
+
+</html>
